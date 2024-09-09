@@ -6,16 +6,15 @@ const columns = [
 ];
 
 const statusOptions = [
-  { name: "Active", uid: "active" },
-  { name: "Paused", uid: "paused" },
-  { name: "Vacation", uid: "vacation" },
+  { name: "Paid", uid: "paid" },
+  { name: "Pending", uid: "pending" },
 ];
 
 const users = [
   {
     id: 1,
     name: "রনি",
-
+    pendingPayment: 0,
     status: "active",
     age: "29",
   },

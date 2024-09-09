@@ -35,8 +35,8 @@ import { VerticalDotsIcon } from "./icons/VerticalDotsIcon";
 // import { capitalize } from "./utils";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
-  active: "success",
-  paused: "danger",
+  paid: "success",
+  pending: "danger",
   vacation: "warning",
 };
 
@@ -81,9 +81,10 @@ export default function TableUI() {
       statusFilter !== "all" &&
       Array.from(statusFilter).length !== statusOptions.length
     ) {
-      filteredUsers = filteredUsers.filter((user) =>
-        Array.from(statusFilter).includes(user.status)
-      );
+      filteredUsers = filteredUsers.filter((user) => {
+        const userStatus = user?.pendingPayment === 0 ? "paid" : "pending";
+        return Array.from(statusFilter).includes(userStatus);
+      });
     }
 
     return filteredUsers;
@@ -111,6 +112,8 @@ export default function TableUI() {
   const renderCell = useCallback((user: User, columnKey: Key) => {
     const cellValue = user[columnKey as keyof User];
 
+    const userStatus = user?.pendingPayment === 0 ? "paid" : "pending";
+
     switch (columnKey) {
       case "name":
         return <p>{cellValue}</p>;
@@ -119,7 +122,7 @@ export default function TableUI() {
         return (
           <Chip
             className="capitalize"
-            color={statusColorMap[user.status]}
+            color={statusColorMap[userStatus]}
             size="sm"
             variant="flat"
           >
@@ -213,11 +216,13 @@ export default function TableUI() {
                 selectionMode="multiple"
                 onSelectionChange={setStatusFilter}
               >
-                {statusOptions.map((status) => (
-                  <DropdownItem key={status.uid} className="capitalize">
-                    {capitalize(status.name)}
-                  </DropdownItem>
-                ))}
+                {statusOptions.map((status) => {
+                  return (
+                    <DropdownItem key={status.uid} className="capitalize">
+                      {capitalize(status.name)}
+                    </DropdownItem>
+                  );
+                })}
               </DropdownMenu>
             </Dropdown>
             <Dropdown>
