@@ -23,8 +23,9 @@ import {
   User,
 } from "@nextui-org/react";
 import { useCallback, useMemo, useState } from "react";
+import AddCustomerModal from "./AddCustomerModal";
+import DeleteResourceModal from "./DeleteResourceModal";
 import { ChevronDownIcon } from "./icons/ChevronDownIcon";
-import { PlusIcon } from "./icons/PlusIcon";
 import { SearchIcon } from "./icons/SearchIcon";
 import { VerticalDotsIcon } from "./icons/VerticalDotsIcon";
 // import { PlusIcon } from "./PlusIcon";
@@ -141,7 +142,9 @@ export default function TableUI() {
               <DropdownMenu>
                 <DropdownItem>View</DropdownItem>
                 <DropdownItem>Edit</DropdownItem>
-                <DropdownItem>Delete</DropdownItem>
+                <DropdownItem>
+                  <DeleteResourceModal />
+                </DropdownItem>
               </DropdownMenu>
             </Dropdown>
           </div>
@@ -249,9 +252,7 @@ export default function TableUI() {
                 ))}
               </DropdownMenu>
             </Dropdown>
-            <Button color="primary" endContent={<PlusIcon />}>
-              Add New
-            </Button>
+            <AddCustomerModal />
           </div>
         </div>
         <div className="flex justify-between items-center">
