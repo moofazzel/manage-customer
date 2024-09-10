@@ -1,8 +1,8 @@
 const columns = [
-  { name: "ID", uid: "id", sortable: true },
-  { name: "NAME", uid: "name", sortable: true },
-  { name: "STATUS", uid: "status", sortable: true },
-  { name: "ACTIONS", uid: "actions" },
+  { name: "আইডি", uid: "id", sortable: true },
+  { name: "নাম", uid: "name", sortable: true },
+  { name: "হিসাব", uid: "status", sortable: true },
+  { name: "অ্যাকশন", uid: "actions" },
 ];
 
 const statusOptions = [

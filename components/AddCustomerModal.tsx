@@ -83,7 +83,7 @@ export default function AddCustomerModal() {
         color="primary"
         endContent={<PlusIcon />}
       >
-        Add New
+        নতুন গ্রাহক
       </Button>
       <Modal
         isOpen={isOpen}

@@ -195,7 +195,7 @@ export default function TableUI() {
           <Input
             isClearable
             className="w-full sm:max-w-[44%]"
-            placeholder="Search by name..."
+            placeholder="নাম দ্বারা অনুসন্ধান করুন..."
             startContent={<SearchIcon />}
             value={filterValue}
             onClear={() => onClear()}
@@ -208,7 +208,7 @@ export default function TableUI() {
                   endContent={<ChevronDownIcon className="text-small" />}
                   variant="flat"
                 >
-                  Status
+                  স্ট্যাটাস
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -234,7 +234,7 @@ export default function TableUI() {
                   endContent={<ChevronDownIcon className="text-small" />}
                   variant="flat"
                 >
-                  Columns
+                  কলাম
                 </Button>
               </DropdownTrigger>
               <DropdownMenu
@@ -257,10 +257,10 @@ export default function TableUI() {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            Total {users.length} users
+            মোট {users.length} জন ব্যবহারকারী
           </span>
           <label className="flex items-center text-default-400 text-small">
-            Rows per page:
+            প্রতি পৃষ্ঠায় সারি:
             <select
               className="bg-transparent outline-none text-default-400 text-small"
               onChange={onRowsPerPageChange}
@@ -286,11 +286,6 @@ export default function TableUI() {
   const bottomContent = useMemo(() => {
     return (
       <div className="py-2 px-2 flex justify-between items-center">
-        <span className="w-[30%] text-small text-default-400">
-          {selectedKeys === "all"
-            ? "All items selected"
-            : `${selectedKeys.size} of ${filteredItems.length} selected`}
-        </span>
         <Pagination
           isCompact
           showControls
@@ -307,7 +302,7 @@ export default function TableUI() {
             variant="flat"
             onPress={onPreviousPage}
           >
-            Previous
+            পেছনে
           </Button>
           <Button
             isDisabled={pages === 1}
@@ -315,7 +310,7 @@ export default function TableUI() {
             variant="flat"
             onPress={onNextPage}
           >
-            Next
+            সমনে
           </Button>
         </div>
       </div>
