@@ -15,7 +15,7 @@ export async function credentialLogin(formData: {
     });
 
     if (response && !response.error) {
-      const user = await User.findOne({ email: formData.email });
+      await User.findOne({ email: formData.email });
       return {
         success: true,
       };
