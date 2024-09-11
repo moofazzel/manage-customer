@@ -48,7 +48,7 @@ export default function AddCustomerModal() {
       setSuccessMessage(response.message);
 
       if (response.status === 200) {
-        setSuccessMessage("Resource successfully added.");
+        setSuccessMessage(response.message);
         setLoading(false);
         handleModalClose();
       } else if (response.status === 500) {

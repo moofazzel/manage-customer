@@ -6,6 +6,7 @@ import dbConnect from "@/lib/mongodb";
 import type { Metadata } from "next";
 import { SessionProvider } from "next-auth/react";
 import { Inter } from "next/font/google";
+import { redirect } from "next/navigation";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"] });
@@ -23,7 +24,7 @@ export default async function RootLayout({
   await dbConnect();
   const session = await auth();
 
-  // if (!session?.user) redirect("/login");
+  if (!session?.user) redirect("/login");
   return (
     <html lang="en">
       <body className={inter.className}>

@@ -1,5 +1,6 @@
 "use client";
 
+import { deleteCustomer } from "@/actions/customers";
 import {
   Button,
   Modal,
@@ -8,19 +9,29 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { DeleteIcon } from "./icons/DeleteIcon";
+type Customer = {
+  id: string;
+  name: string;
+  area: string;
+  phone: string;
+  connectionSpeed: number;
+  monthlyFee: number;
+  dueAmount: number;
+  connectionDate: string;
+};
 
-export default function DeleteResourceModal({ resourceName }) {
+export default function DeleteResourceModal({
+  customerData,
+}: {
+  customerData: Customer;
+}) {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const [refreshing, setRefreshing] = useState(false);
   const [successMessage, setSuccessMessage] = useState(null);
-
-  const router = useRouter();
 
   const handleDelete = async () => {
     setLoading(true);
@@ -28,27 +39,19 @@ export default function DeleteResourceModal({ resourceName }) {
     setSuccessMessage(null);
 
     try {
-      // const response = await deleteResourceFromSheet(resourceName);
-      // if (response.status === 200) {
-      //   setSuccessMessage("Resource successfully deleted.");
-      //   setLoading(false);
-      //   setRefreshing(true);
-      //   // Simulate a delay for page refresh
-      //   await new Promise((resolve) => setTimeout(resolve, 5000)); // 5-second delay
-      //   // Refresh the page or re-fetch data after deleting the resource
-      //   router.refresh();
-      //   setRefreshing(false);
-      // handleModalClose();
-      // } else {
-      //   setErrorMessage(response.message || "Failed to add resources.");
-      //   setSuccessMessage(null);
-      //   setLoading(false);
-      //   setRefreshing(false);
-      // }
+      const response = await deleteCustomer(customerData?.id);
+      if (response.status === 200) {
+        setSuccessMessage(response.message);
+        setLoading(false);
+        handleModalClose();
+      } else {
+        setErrorMessage(response.message);
+        setSuccessMessage(null);
+        setLoading(false);
+      }
     } catch (error) {
       console.log("🚀 ~ error:", error);
       setLoading(false);
-      setRefreshing(false);
       setErrorMessage("An unexpected error occurred. Please try again.");
       setSuccessMessage(null);
       console.error(error);
@@ -87,7 +90,7 @@ export default function DeleteResourceModal({ resourceName }) {
         scrollBehavior="inside"
       >
         <ModalContent>
-          <ModalHeader>Delete Resource</ModalHeader>
+          <ModalHeader>গ্রাহক ডিলিট করুন</ModalHeader>
           <ModalBody>
             {errorMessage && (
               <div className="bg-red-100 border border-red-500 text-black px-4 py-3 rounded-lg text-center">
@@ -102,20 +105,21 @@ export default function DeleteResourceModal({ resourceName }) {
               </div>
             )}
             <p>
-              Are you sure you want to delete the resource{" "}
-              <span className="font-bold ">{resourceName}</span>?
+              আপনি কি নিশ্চিত এই গ্রাহককে ডিলিট করতে চান{" "}
+              <span className="font-bold ">{customerData?.name}</span>?
+              <small>নিশ্চিত করলে গ্রাহকের সব ডাটা মুছে যাবে । </small>
             </p>
           </ModalBody>
           <ModalFooter>
-            <Button color="default" variant="light" onClick={handleModalClose}>
-              Cancel
+            <Button
+              color="primary"
+              variant="bordered"
+              onClick={handleModalClose}
+            >
+              বাদ দিন
             </Button>
             <Button color="danger" isLoading={loading} onClick={handleDelete}>
-              {refreshing
-                ? "Refreshing..."
-                : loading
-                ? "Deleting..."
-                : "Delete"}
+              {loading ? "ডিলিট করা হচ্ছে..." : "হ্যাঁ চাই"}
             </Button>
           </ModalFooter>
         </ModalContent>

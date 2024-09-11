@@ -48,8 +48,6 @@ export async function updateCustomerPayment(paymentData: {
   id: string;
   paymentAmount: number;
 }) {
-  console.log(paymentData.id);
-
   try {
     const existingCustomer = await Customer.findOne({
       _id: paymentData.id,
@@ -78,6 +76,38 @@ export async function updateCustomerPayment(paymentData: {
     return {
       status: 200,
       message: "পেমেন্ট সম্পন্ন হয়েছে",
+    };
+  } catch (error) {
+    console.error("Error updating customer payment:", error);
+    return {
+      status: 500,
+      message: "একটি ত্রুটি ঘটেছে। আবার চেষ্টা করুন",
+    };
+  }
+}
+
+export async function deleteCustomer(id: { id: string }) {
+  console.log(id);
+  try {
+    const existingCustomer = await Customer.findOne({
+      _id: id,
+    });
+
+    if (!existingCustomer) {
+      return {
+        status: 500,
+        message: "গ্রাহক পাওয়া যায়নি",
+      };
+    }
+
+    // delete the customer
+    await Customer.deleteOne({ _id: id });
+
+    revalidatePath("/");
+
+    return {
+      status: 200,
+      message: "ডিলিট সম্পন্ন হয়েছে",
     };
   } catch (error) {
     console.error("Error updating customer payment:", error);

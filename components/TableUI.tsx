@@ -24,17 +24,12 @@ import {
 } from "@nextui-org/react";
 import { useCallback, useMemo, useState } from "react";
 import AddCustomerModal from "./AddCustomerModal";
+
 import DeleteResourceModal from "./DeleteResourceModal";
 import { ChevronDownIcon } from "./icons/ChevronDownIcon";
 import { SearchIcon } from "./icons/SearchIcon";
-import { VerticalDotsIcon } from "./icons/VerticalDotsIcon";
 import UpdatePaymentModal from "./UpdatePaymentModal";
-// import { PlusIcon } from "./PlusIcon";
-// import { VerticalDotsIcon } from "./VerticalDotsIcon";
-// import { ChevronDownIcon } from "./ChevronDownIcon";
-// import { SearchIcon } from "./SearchIcon";
-// import { columns, users, statusOptions } from "./data";
-// import { capitalize } from "./utils";
+import ViewCustomerModal from "./ViewCustomerModal";
 
 const statusColorMap: Record<string, ChipProps["color"]> = {
   paid: "success",
@@ -44,10 +39,18 @@ const statusColorMap: Record<string, ChipProps["color"]> = {
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "status", "actions"];
 
-type Customer = (typeof customers)[0];
+type Customer = {
+  id: string;
+  name: string;
+  area: string;
+  phone: string;
+  connectionSpeed: number;
+  monthlyFee: number;
+  dueAmount: number;
+  connectionDate: string;
+};
 
-export default function TableUI({ customers }) {
-  console.log("🚀 ~ customers:", customers);
+export default function TableUI({ customers }: { customers: Customer[] }) {
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
@@ -96,7 +99,7 @@ export default function TableUI({ customers }) {
     }
 
     return filteredUsers;
-  }, [customers, filterValue, statusFilter]);
+  }, [customers, filterValue, hasSearchFilter, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -110,7 +113,9 @@ export default function TableUI({ customers }) {
   const sortedItems = useMemo(() => {
     return [...items].sort((a: Customer, b: Customer) => {
       const first = a[sortDescriptor.column as keyof Customer] as number;
+
       const second = b[sortDescriptor.column as keyof Customer] as number;
+
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
@@ -130,10 +135,9 @@ export default function TableUI({ customers }) {
     switch (columnKey) {
       case "name":
         return (
-          <p>
-            {cellValue}{" "}
-            <small className="text-default-500"> ({user?.area})</small>
-          </p>
+          <>
+            <ViewCustomerModal customerData={user} />
+          </>
         );
 
       case "status":
@@ -149,25 +153,9 @@ export default function TableUI({ customers }) {
         );
       case "actions":
         return (
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown>
-              <DropdownTrigger>
-                <>
-                  <UpdatePaymentModal customerData={user} />
-
-                  <Button isIconOnly size="sm" variant="light">
-                    <VerticalDotsIcon className="text-default-300" />
-                  </Button>
-                </>
-              </DropdownTrigger>
-              <DropdownMenu>
-                <DropdownItem>View</DropdownItem>
-                <DropdownItem>Edit</DropdownItem>
-                <DropdownItem>
-                  <DeleteResourceModal />
-                </DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
+          <div className="relative flex justify-end items-center gap-5">
+            <UpdatePaymentModal customerData={user} />
+            <DeleteResourceModal customerData={user} />
           </div>
         );
       default:
@@ -286,9 +274,10 @@ export default function TableUI({ customers }) {
               className="bg-transparent outline-none text-default-400 text-small"
               onChange={onRowsPerPageChange}
             >
-              <option value="5">5</option>
               <option value="10">10</option>
               <option value="15">15</option>
+              <option value="20">20</option>
+              <option value="30">30</option>
             </select>
           </label>
         </div>
@@ -301,6 +290,7 @@ export default function TableUI({ customers }) {
     onSearchChange,
     onRowsPerPageChange,
     customers.length,
+
     hasSearchFilter,
   ]);
 
@@ -365,7 +355,10 @@ export default function TableUI({ customers }) {
           </TableColumn>
         )}
       </TableHeader>
-      <TableBody emptyContent={"No users found"} items={sortedItems}>
+      <TableBody
+        emptyContent={"কোনো ব্যবহারকারী পাওয়া যায়নি"}
+        items={sortedItems}
+      >
         {(item) => (
           <TableRow key={item.id}>
             {(columnKey) => (

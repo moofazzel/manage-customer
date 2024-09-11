@@ -1,5 +1,4 @@
 const columns = [
-  { name: "আইডি", uid: "id", sortable: true },
   { name: "নাম", uid: "name", sortable: true },
   { name: "হিসাব", uid: "status", sortable: true },
   { name: "অ্যাকশন", uid: "actions" },
