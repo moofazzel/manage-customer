@@ -11,7 +11,7 @@ export async function credentialLogin(formData: {
     const response = await signIn("credentials", {
       email: formData.email,
       password: formData.password,
-      redirect: false, // Disable auto redirection
+      redirect: false,
     });
 
     if (response && !response.error) {
@@ -20,13 +20,16 @@ export async function credentialLogin(formData: {
         success: true,
       };
     } else {
-      throw new Error(response.error || "Login failed");
+      return {
+        success: false,
+        message: response?.error || "লগইনের সময় একটি ত্রুটি ঘটেছে",
+      };
     }
   } catch (error: any) {
     console.log("🚀 ~ error:", error);
     return {
       success: false,
-      message: error.message || "An error occurred during login",
+      message: error.message || "লগইনের সময় একটি ত্রুটি ঘটেছে",
     };
   }
 }

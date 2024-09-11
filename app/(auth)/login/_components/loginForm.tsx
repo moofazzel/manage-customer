@@ -20,7 +20,7 @@ const LoginForm = () => {
     const password = formData.get("password") as string | null;
 
     if (!email || !password) {
-      setErrorMessage("Email and password are required.");
+      setErrorMessage("ইমেইল এবং পাসওয়ার্ড প্রয়োজন।");
       return;
     }
 
@@ -32,7 +32,7 @@ const LoginForm = () => {
       if (response?.success) {
         router.push("/");
       } else {
-        setErrorMessage("Invalid username or password");
+        setErrorMessage("অবৈধ ইমেইল বা পাসওয়ার্ড।");
       }
     } catch (error: unknown) {
       // Change 'any' to 'unknown'
@@ -41,7 +41,7 @@ const LoginForm = () => {
       if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("An error occurred while logging in.");
+        setErrorMessage("লগইন করার সময় একটি ত্রুটি ঘটেছে।");
       }
     } finally {
       setLoading(false);
@@ -55,7 +55,7 @@ const LoginForm = () => {
     >
       {errorMessage && (
         <div className="px-4 py-3 text-center text-black bg-red-100 border border-red-500 rounded-lg">
-          <p className="font-bold">Warning</p>
+          <p className="font-bold">সতর্কতা</p>
           <p>{errorMessage}</p>
         </div>
       )}
@@ -63,7 +63,7 @@ const LoginForm = () => {
       <Input
         name="email"
         type="email"
-        label="Email"
+        label="ইমেইল"
         radius="sm"
         isRequired
         required
@@ -72,7 +72,7 @@ const LoginForm = () => {
       <Input
         name="password"
         type="password"
-        label="Password"
+        label="পাসওয়ার্ড"
         radius="sm"
         isRequired
         required
@@ -81,11 +81,11 @@ const LoginForm = () => {
       <div className="flex justify-center">
         {loading ? (
           <Button isLoading color="primary">
-            Loading
+            লোড হচ্ছে
           </Button>
         ) : (
           <Button type="submit" size="lg" radius="sm" color="primary">
-            Login
+            লগইন করুন
           </Button>
         )}
       </div>

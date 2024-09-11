@@ -9,7 +9,7 @@ export async function POST(request: Request) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { message: "Email and password are required" },
+        { message: "ইমেইল এবং পাসওয়ার্ড প্রয়োজন" },
         { status: 400 }
       );
     }
@@ -19,7 +19,7 @@ export async function POST(request: Request) {
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return NextResponse.json(
-        { message: "User already exists" },
+        { message: "ব্যবহারকারী ইতিমধ্যেই বিদ্যমান" },
         { status: 400 }
       );
     }
@@ -29,11 +29,14 @@ export async function POST(request: Request) {
 
     await newUser.save();
 
-    return NextResponse.json({ message: "User created" }, { status: 201 });
-  } catch (error) {
-    console.error("Error creating user:", error);
     return NextResponse.json(
-      { message: "Error creating user" },
+      { message: "ব্যবহারকারী তৈরি হয়েছে" },
+      { status: 201 }
+    );
+  } catch (error) {
+    console.error("ব্যবহারকারী তৈরি করার সময় ত্রুটি:", error);
+    return NextResponse.json(
+      { message: "ব্যবহারকারী তৈরি করার সময় ত্রুটি" },
       { status: 500 }
     );
   }

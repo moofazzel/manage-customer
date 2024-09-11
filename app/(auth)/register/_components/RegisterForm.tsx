@@ -5,15 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 const RegisterForm = () => {
-  // const [isAgreed, setIsAgreed] = useState(true);
-  // const [isConfirmedPassword, setIsConfirmedPassword] = useState(true);
-  // const [passwordVisibility, setPasswordVisibility] = useState({
-  //   password: false,
-  //   confirmPassword: false,
-  // });
-
   const [loading, setLoading] = useState(false);
-
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const router = useRouter();
@@ -28,12 +20,6 @@ const RegisterForm = () => {
     const fullName = formData.get("name");
     const email = formData.get("email");
     const password = formData.get("password");
-    // const confirm = formData.get("confirm");
-
-    // if (confirm !== password) {
-    //   setIsConfirmedPassword(false);
-    //   return;
-    // }
 
     try {
       await fetch("/api/register", {
@@ -55,17 +41,10 @@ const RegisterForm = () => {
       if (error instanceof Error) {
         setErrorMessage(error.message);
       } else {
-        setErrorMessage("An unknown error occurred");
+        setErrorMessage("একটি অজানা ত্রুটি ঘটেছে");
       }
     }
   };
-
-  // const toggleVisibility = (field: "password" | "confirmPassword") => {
-  //   setPasswordVisibility((prevState) => ({
-  //     ...prevState,
-  //     [field]: !prevState[field],
-  //   }));
-  // };
 
   return (
     <form
@@ -74,7 +53,7 @@ const RegisterForm = () => {
     >
       {errorMessage && (
         <div className="bg-red-100 border border-red-500 text-black px-4 py-3 rounded-lg text-center">
-          <p className="font-bold">Warning</p>
+          <p className="font-bold">সতর্কতা</p>
           <p>{errorMessage}</p>
         </div>
       )}
@@ -82,7 +61,7 @@ const RegisterForm = () => {
       <Input
         name="email"
         type="email"
-        label="Email"
+        label="ইমেইল"
         radius="sm"
         isRequired
         required
@@ -91,7 +70,7 @@ const RegisterForm = () => {
       <Input
         name="password"
         type="password"
-        label="Password"
+        label="পাসওয়ার্ড"
         radius="sm"
         isRequired
         required
@@ -125,11 +104,11 @@ const RegisterForm = () => {
               </svg>
             }
           >
-            Loading
+            লোড হচ্ছে
           </Button>
         ) : (
           <Button type="submit" size="lg" radius="sm" color="primary">
-            Register
+            রেজিস্টার করুন
           </Button>
         )}
       </div>
