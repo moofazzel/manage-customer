@@ -40,7 +40,6 @@ export default function ViewCustomerModal({
     <>
       <Button onClick={handleModalOpen} className="bg-blue-100">
         {customerData?.name}{" "}
-        <small className="text-default-500"> ({customerData?.area})</small>
       </Button>
       <Modal
         isOpen={isOpen}

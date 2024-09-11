@@ -13,6 +13,10 @@ export const metadata: Metadata = {
   description: "Gelman WiFi",
 };
 
+import { Protest_Guerrilla } from "next/font/google";
+
+const protest = Protest_Guerrilla({ weight: "400", subsets: ["latin"] });
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -23,10 +27,12 @@ export default async function RootLayout({
       <body className={inter.className}>
         <Provider>
           <SessionProvider>
-            <nav className="container flex justify-between gap-10 pt-5 pb-14">
-              <h2 className="text-3xl font-bold ">Gelman WIFI</h2>
+            <nav className="container flex justify-between gap-3 pt-5 pb-14">
+              <h2 className={`text-2xl font-bold ${protest.className} `}>
+                Gelman WIFI
+              </h2>
 
-              <div className="space-x-3">
+              <div className="space-x-3 text-md">
                 <Link
                   href={"/register"}
                   className="bg-blue-600  text-white font-bold py-2 px-4 rounded-xl"
