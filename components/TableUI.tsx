@@ -142,19 +142,20 @@ export default function TableUI({ customers }: { customers: Customer[] }) {
         );
 
       case "status":
+        const dueAmount =
+          user?.dueAmount === 0 ? "পরিশোধ" : `${user?.dueAmount}৳`;
         return (
           <Chip
-            className="capitalize"
+            className="capitalize min-w-20 text-center"
             color={statusColorMap[userStatus]}
-            size="sm"
             variant="flat"
           >
-            {user?.dueAmount} ৳
+            {dueAmount}
           </Chip>
         );
       case "actions":
         return (
-          <div className="relative flex justify-end items-center gap-5">
+          <div className="relative flex justify-end items-center gap-4">
             <UpdatePaymentModal customerData={user} />
             <DeleteResourceModal customerData={user} />
           </div>
@@ -349,7 +350,7 @@ export default function TableUI({ customers }: { customers: Customer[] }) {
         {(column) => (
           <TableColumn
             key={column.uid}
-            align={column.uid === "actions" ? "center" : "start"}
+            align={column.uid === "actions" ? "end" : "start"}
             allowsSorting={column.sortable}
           >
             {column.name}
