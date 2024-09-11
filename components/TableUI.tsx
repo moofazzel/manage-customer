@@ -1,11 +1,12 @@
 "use client";
 
-import { columns, statusOptions, users } from "@/data";
+import { columns, statusOptions } from "@/data";
 import { capitalize } from "@/utils";
 import {
   Button,
   Chip,
   ChipProps,
+  User as Customer,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -20,7 +21,6 @@ import {
   TableColumn,
   TableHeader,
   TableRow,
-  User,
 } from "@nextui-org/react";
 import { useCallback, useMemo, useState } from "react";
 import AddCustomerModal from "./AddCustomerModal";
@@ -28,6 +28,7 @@ import DeleteResourceModal from "./DeleteResourceModal";
 import { ChevronDownIcon } from "./icons/ChevronDownIcon";
 import { SearchIcon } from "./icons/SearchIcon";
 import { VerticalDotsIcon } from "./icons/VerticalDotsIcon";
+import UpdatePaymentModal from "./UpdatePaymentModal";
 // import { PlusIcon } from "./PlusIcon";
 // import { VerticalDotsIcon } from "./VerticalDotsIcon";
 // import { ChevronDownIcon } from "./ChevronDownIcon";
@@ -38,14 +39,15 @@ import { VerticalDotsIcon } from "./icons/VerticalDotsIcon";
 const statusColorMap: Record<string, ChipProps["color"]> = {
   paid: "success",
   pending: "danger",
-  vacation: "warning",
+  warning: "warning",
 };
 
 const INITIAL_VISIBLE_COLUMNS = ["name", "status", "actions"];
 
-type User = (typeof users)[0];
+type Customer = (typeof customers)[0];
 
-export default function TableUI() {
+export default function TableUI({ customers }) {
+  console.log("🚀 ~ customers:", customers);
   const [filterValue, setFilterValue] = useState("");
   const [selectedKeys, setSelectedKeys] = useState<Selection>(new Set([]));
   const [visibleColumns, setVisibleColumns] = useState<Selection>(
@@ -71,7 +73,7 @@ export default function TableUI() {
   }, [visibleColumns]);
 
   const filteredItems = useMemo(() => {
-    let filteredUsers = [...users];
+    let filteredUsers = [...customers];
 
     if (hasSearchFilter) {
       filteredUsers = filteredUsers.filter((user) =>
@@ -83,13 +85,18 @@ export default function TableUI() {
       Array.from(statusFilter).length !== statusOptions.length
     ) {
       filteredUsers = filteredUsers.filter((user) => {
-        const userStatus = user?.pendingPayment === 0 ? "paid" : "pending";
+        const userStatus =
+          user?.dueAmount === 0
+            ? "paid"
+            : user?.monthlyFee === user?.dueAmount
+            ? "warning"
+            : "pending";
         return Array.from(statusFilter).includes(userStatus);
       });
     }
 
     return filteredUsers;
-  }, [users, filterValue, statusFilter]);
+  }, [customers, filterValue, statusFilter]);
 
   const pages = Math.ceil(filteredItems.length / rowsPerPage);
 
@@ -101,23 +108,33 @@ export default function TableUI() {
   }, [page, filteredItems, rowsPerPage]);
 
   const sortedItems = useMemo(() => {
-    return [...items].sort((a: User, b: User) => {
-      const first = a[sortDescriptor.column as keyof User] as number;
-      const second = b[sortDescriptor.column as keyof User] as number;
+    return [...items].sort((a: Customer, b: Customer) => {
+      const first = a[sortDescriptor.column as keyof Customer] as number;
+      const second = b[sortDescriptor.column as keyof Customer] as number;
       const cmp = first < second ? -1 : first > second ? 1 : 0;
 
       return sortDescriptor.direction === "descending" ? -cmp : cmp;
     });
   }, [sortDescriptor, items]);
 
-  const renderCell = useCallback((user: User, columnKey: Key) => {
-    const cellValue = user[columnKey as keyof User];
+  const renderCell = useCallback((user: Customer, columnKey: Key) => {
+    const cellValue = user[columnKey as keyof Customer];
 
-    const userStatus = user?.pendingPayment === 0 ? "paid" : "pending";
+    const userStatus =
+      user?.dueAmount === 0
+        ? "paid"
+        : user?.monthlyFee === user?.dueAmount
+        ? "warning"
+        : "pending";
 
     switch (columnKey) {
       case "name":
-        return <p>{cellValue}</p>;
+        return (
+          <p>
+            {cellValue}{" "}
+            <small className="text-default-500"> ({user?.area})</small>
+          </p>
+        );
 
       case "status":
         return (
@@ -127,7 +144,7 @@ export default function TableUI() {
             size="sm"
             variant="flat"
           >
-            {cellValue}
+            {user?.dueAmount} ৳
           </Chip>
         );
       case "actions":
@@ -135,9 +152,13 @@ export default function TableUI() {
           <div className="relative flex justify-end items-center gap-2">
             <Dropdown>
               <DropdownTrigger>
-                <Button isIconOnly size="sm" variant="light">
-                  <VerticalDotsIcon className="text-default-300" />
-                </Button>
+                <>
+                  <UpdatePaymentModal customerData={user} />
+
+                  <Button isIconOnly size="sm" variant="light">
+                    <VerticalDotsIcon className="text-default-300" />
+                  </Button>
+                </>
               </DropdownTrigger>
               <DropdownMenu>
                 <DropdownItem>View</DropdownItem>
@@ -257,7 +278,7 @@ export default function TableUI() {
         </div>
         <div className="flex justify-between items-center">
           <span className="text-default-400 text-small">
-            মোট {users.length} জন ব্যবহারকারী
+            মোট {customers.length} জন ব্যবহারকারী
           </span>
           <label className="flex items-center text-default-400 text-small">
             প্রতি পৃষ্ঠায় সারি:
@@ -279,7 +300,7 @@ export default function TableUI() {
     visibleColumns,
     onSearchChange,
     onRowsPerPageChange,
-    users.length,
+    customers.length,
     hasSearchFilter,
   ]);
 

@@ -1,11 +1,9 @@
 "use client";
 
-import { createCustomer } from "@/actions/customers";
+import { updateCustomerPayment } from "@/actions/customers";
 import { PlusIcon } from "@/components/icons/PlusIcon";
 import {
   Button,
-  Checkbox,
-  DatePicker,
   Input,
   Modal,
   ModalBody,
@@ -15,13 +13,11 @@ import {
 } from "@nextui-org/react";
 import { useState } from "react";
 
-export default function AddCustomerModal() {
+export default function UpdatePaymentModal({ customerData }) {
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
   const [successMessage, setSuccessMessage] = useState(null);
-
-  const [isPaid, setIsPaid] = useState(false);
 
   const addCustomer = async (event) => {
     event.preventDefault();
@@ -32,18 +28,13 @@ export default function AddCustomerModal() {
     const formData = new FormData(event.currentTarget);
 
     const newFormData = {
-      name: formData.get("name"),
-      area: formData.get("area"),
-      phone: formData.get("phone"),
-      connectionSpeed: formData.get("connectionSpeed"),
-      monthlyFee: formData.get("monthlyFee"),
-      monthlyPaid: isPaid,
-      connectionDate: formData.get("connectionDate"),
+      id: customerData.id,
+      paymentAmount: formData.get("paymentAmount"),
     };
 
     try {
       // Make the API call to create new customer
-      const response = await createCustomer(newFormData);
+      const response = await updateCustomerPayment(newFormData);
 
       setSuccessMessage(response.message);
 
@@ -80,12 +71,14 @@ export default function AddCustomerModal() {
   return (
     <>
       <Button
+        className=" p-0 m-0"
         onClick={handleModalOpen}
+        isIconOnly
+        size="sm"
+        variant="flat"
         color="primary"
         endContent={<PlusIcon />}
-      >
-        নতুন গ্রাহক
-      </Button>
+      ></Button>
       <Modal
         isOpen={isOpen}
         onClose={handleModalClose}
@@ -94,7 +87,7 @@ export default function AddCustomerModal() {
       >
         <ModalContent>
           <form onSubmit={addCustomer}>
-            <ModalHeader> নতুন সংযোগ</ModalHeader>
+            <ModalHeader> পেমেন্ট আপডেট করুন</ModalHeader>
             <ModalBody className="max-h-[35rem]">
               {errorMessage && (
                 <div className="bg-red-100 border border-red-500 text-black px-4 py-3 rounded-lg text-center">
@@ -111,63 +104,40 @@ export default function AddCustomerModal() {
               )}
 
               <div className="flex flex-col gap-3">
-                <Input
-                  name="name"
-                  type="text"
-                  label="নাম"
-                  radius="sm"
-                  isRequired
-                  required
-                />
+                <div className="flex gap-5">
+                  <Input
+                    defaultValue={customerData?.name}
+                    readOnly
+                    name="name"
+                    type="text"
+                    label="নাম"
+                    radius="sm"
+                  />
+
+                  <Input
+                    defaultValue={customerData?.area}
+                    readOnly
+                    name="area"
+                    type="text"
+                    label="এলাকা"
+                    radius="sm"
+                  />
+                </div>
 
                 <Input
-                  name="area"
-                  type="text"
-                  label="এলাকা"
-                  radius="sm"
-                  isRequired
-                  required
-                />
-
-                <Input
-                  label="মোবাইল নাম্বার"
-                  name="phone"
-                  type="tel"
-                  pattern="(\+8801|01)[0-9]{9}"
-                  placeholder="XXXXXXXXX"
-                  radius="sm"
-                  isRequired
-                  required
-                />
-
-                <Input
-                  name="connectionSpeed"
-                  type="number"
-                  label="স্পিড (Mbps)"
-                  radius="sm"
-                  isRequired
-                  required
-                />
-
-                <Input
+                  defaultValue={customerData?.monthlyFee}
+                  readOnly
                   name="monthlyFee"
                   type="number"
-                  label="মাসিক চার্জ"
+                  label="মাসিক ফি"
                   radius="sm"
-                  isRequired
-                  required
                 />
 
-                <Checkbox
-                  name="monthlyPaid"
-                  onChange={() => setIsPaid(!isPaid)}
-                >
-                  মাসিক চার্জ পরিশোধ করেছে
-                </Checkbox>
-
-                <DatePicker
-                  name="connectionDate"
-                  label="সংযোগ তারিখ"
+                <Input
+                  isRequired
+                  name="paymentAmount"
+                  type="number"
+                  label="পেমেন্ট পরিমান"
                   radius="sm"
                 />
               </div>

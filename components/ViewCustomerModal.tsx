@@ -4,7 +4,6 @@ import { createCustomer } from "@/actions/customers";
 import { PlusIcon } from "@/components/icons/PlusIcon";
 import {
   Button,
-  Checkbox,
   DatePicker,
   Input,
   Modal,
@@ -13,68 +12,18 @@ import {
   ModalFooter,
   ModalHeader,
 } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function AddCustomerModal() {
+export default function ViewCustomerModal() {
   const [isOpen, setIsOpen] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [successMessage, setSuccessMessage] = useState(null);
-
-  const [isPaid, setIsPaid] = useState(false);
-
-  const addCustomer = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    setErrorMessage(null);
-    setSuccessMessage(null);
-
-    const formData = new FormData(event.currentTarget);
-
-    const newFormData = {
-      name: formData.get("name"),
-      area: formData.get("area"),
-      phone: formData.get("phone"),
-      connectionSpeed: formData.get("connectionSpeed"),
-      monthlyFee: formData.get("monthlyFee"),
-      monthlyPaid: isPaid,
-      connectionDate: formData.get("connectionDate"),
-    };
-
-    try {
-      // Make the API call to create new customer
-      const response = await createCustomer(newFormData);
-
-      setSuccessMessage(response.message);
-
-      if (response.status === 200) {
-        setSuccessMessage("Resource successfully added.");
-        setLoading(false);
-        handleModalClose();
-      } else if (response.status === 500) {
-        setErrorMessage(response.message);
-        setSuccessMessage(null);
-        setLoading(false);
-      }
-    } catch (error) {
-      setLoading(false);
-      setErrorMessage(error.message);
-      setSuccessMessage(null);
-      console.error(error);
-    }
-  };
 
   const handleModalOpen = () => {
     setIsOpen(true);
-    setErrorMessage(null);
   };
 
   const handleModalClose = () => {
-    if (!loading) {
-      setIsOpen(false);
-      setErrorMessage(null);
-      setSuccessMessage(null);
-    }
+    setIsOpen(false);
   };
 
   return (
@@ -93,7 +42,7 @@ export default function AddCustomerModal() {
         scrollBehavior="inside"
       >
         <ModalContent>
-          <form onSubmit={addCustomer}>
+          <form>
             <ModalHeader> নতুন সংযোগ</ModalHeader>
             <ModalBody className="max-h-[35rem]">
               {errorMessage && (
@@ -152,18 +101,11 @@ export default function AddCustomerModal() {
                 <Input
                   name="monthlyFee"
                   type="number"
-                  label="মাসিক চার্জ"
+                  label="মাসিক ফি"
                   radius="sm"
                   isRequired
                   required
                 />
-
-                <Checkbox
-                  name="monthlyPaid"
-                  onChange={() => setIsPaid(!isPaid)}
-                >
-                  মাসিক চার্জ পরিশোধ করেছে
-                </Checkbox>
 
                 <DatePicker
                   name="connectionDate"
