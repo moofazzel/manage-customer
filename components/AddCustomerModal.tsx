@@ -90,7 +90,7 @@ export default function AddCustomerModal() {
         isOpen={isOpen}
         onClose={handleModalClose}
         isKeyboardDismissDisabled={true}
-        scrollBehavior="inside"
+        scrollBehavior="normal"
       >
         <ModalContent>
           <form onSubmit={addCustomer}>
@@ -172,7 +172,7 @@ export default function AddCustomerModal() {
                 />
               </div>
             </ModalBody>
-            <ModalFooter>
+            <ModalFooter className="pb-5">
               <Button color="danger" variant="light" onClick={handleModalClose}>
                 বাতিল
               </Button>

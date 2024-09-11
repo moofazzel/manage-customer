@@ -87,7 +87,7 @@ export default function DeleteResourceModal({
         isOpen={isOpen}
         onClose={handleModalClose}
         isKeyboardDismissDisabled={true}
-        scrollBehavior="inside"
+        scrollBehavior="normal"
       >
         <ModalContent>
           <ModalHeader>গ্রাহক ডিলিট করুন</ModalHeader>
